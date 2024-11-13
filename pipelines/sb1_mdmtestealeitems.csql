@@ -1,35 +1,25 @@
-WITH sb1_mdmtestealeitems AS (
+WITH
+
+lk_mdmtestealeitems_counter AS (
+  SELECT
+    ifnull(max(mdmStagingCounter), 0) AS counter
+  FROM
+    mdmtestealeitems
+),
+
+lk_mdmtestealeitems AS (
   SELECT
     b1_cod,
     b1_desc,
     b1_filial
     --metadata--
-  FROM (
-    SELECT * EXCEPT(ranking)
-    FROM (
-      SELECT ROW_NUMBER() OVER (partition BY mdmId ORDER BY mdmCounterForEntity DESC) ranking, *
-      FROM stg_protheus_carol_sb1
-      --timestamp-- WHERE mdmCounterForEntity__DATETIME__ > SAFE.DATETIME(TIMESTAMP_MICROS(SAFE_CAST({{start_from}} AS INT64)))
-    )
-    WHERE ranking = 1
-  ) AS stg
-  limit 10
-),
-lookup_mdmtestealeitems AS (
-  SELECT *
-  FROM mdmtestealeitems
-  WHERE mdmDeleted IS NULL
-  OR mdmDeleted = false
-),
-combinedSources AS (
-  SELECT * FROM sb1_mdmtestealeitems
-),
-processedData AS (
-  SELECT *
-  FROM combinedSources
-  -- WHERE
-  -- rejection rules
+  FROM
+    stg_protheus_carol_sb1 AS stg
+  WHERE
+    mdmCounterForEntity > (SELECT counter FROM lk_mdmtestealeitems_counter)
+  QUALIFY
+    1 = ROW_NUMBER() OVER (PARTITION BY mdmTenantId, mdmId ORDER BY mdmCounterForEntity DESC)
 )
 
-SELECT * FROM processedData
+SELECT * FROM lk_mdmtestealeitems
 
