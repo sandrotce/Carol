@@ -1,4 +1,5 @@
 {
+  "version": "V2",
   "pipelines": [
     {
       "processScript": "pipelines/sb1_mdmtestealeitems.csql",
