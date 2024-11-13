@@ -6,11 +6,11 @@
         "realtime": false,
         "bigquery": {
           "customer": true,
-          "unified": false
+          "unified": true
         },
         "subscriptions": {
           "customer": true,
-          "unified": false
+          "unified": true
         }
       },
       "outputDataModelName": "mdmtestealeitems",
