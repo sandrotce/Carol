@@ -1,0 +1,38 @@
+{
+  "pipelines": [
+    {
+      "processScript": "c:\\P12\\Ambientes\\totvs.protheus\\totvs.integration\\Carol\\WITH sb1_mdmtestealeitems.csql",
+      "sendTo": {
+        "realtime": false,
+        "bigquery": {
+          "customer": true,
+          "unified": false
+        },
+        "subscriptions": {
+          "customer": true,
+          "unified": false
+        }
+      },
+      "outputDataModelName": "mdmtestealeitems",
+      "timeZone": "America/Sao_Paulo",
+      "cronExpressions": [
+        "0 */30 * * * ?"
+      ],
+      "overlapDeltaMinutes": 300,
+      "pipelineName": "itemtesteale",
+      "sourceEntities": {
+        "dataModels": [
+          {
+            "dataModelName": "mdmtestealeitems"
+          }
+        ],
+        "stagings": [
+          {
+            "connectorName": "protheus_carol",
+            "stagingName": "sb1"
+          }
+        ]
+      }
+    }
+  ]
+}
